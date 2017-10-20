@@ -3,6 +3,7 @@ require 'dotenv/load'
 require 'httparty'
 require 'pp'
 require "awesome_print"
+require 'json'
 
 API_KEY = ENV['API_KEY']
 
@@ -13,10 +14,27 @@ url = "#{base_url}?api-key=#{API_KEY}"
 
 response = HTTParty.get(url)
 
-response['results'].each do |story|
-  ap story['title']
-  ap story['url']
-  ap story['byline']
-  ap story['published_date']
+# save response to a file
+File.open("data/temp.json","w") do |f|
+  f.write(response['results'].to_json)
+end
+
+# access that saved response again
+my_response = JSON.parse(File.read("data/temp.json"))
+my_response.each do |story|
+  p story['title']
+  p story['url']
+  p story['byline']
+  p story['published_date']
   puts ''
 end
+
+# OR output response to console
+response['results'].each do |story|
+  p story['title']
+  p story['url']
+  p story['byline']
+  p story['published_date']
+  puts ''
+end
+
